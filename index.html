@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Paisaje Sensorial</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      transition: background 2s ease;
+      font-family: sans-serif;
+    }
+
+    #sun {
+      position: absolute;
+      top: 50px;
+      left: 50px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, #ffeb3b, #fbc02d);
+      border-radius: 50%;
+      animation: moveSun 30s infinite linear;
+      z-index: 1;
+    }
+
+    @keyframes moveSun {
+      0%   { left: -100px; top: 150px; }
+      50%  { left: 80%; top: 50px; }
+      100% { left: -100px; top: 150px; }
+    }
+
+    .bird {
+      position: absolute;
+      top: 200px;
+      left: 100px;
+      font-size: 48px;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    #landscapeBtn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      background-color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sun"></div>
+  <div class="bird" onclick="playChirp()">🐦</div>
+  <button id="landscapeBtn" onclick="switchLandscape()">Cambiar paisaje</button>
+
+  <audio id="chirpSound" src="assets/bird.mp3"></audio>
+  <audio id="ambience" src="assets/ambience-forest.mp3" autoplay loop></audio>
+
+  <script>
+    const landscapes = [
+      {
+        name: "bosque",
+        background: "linear-gradient(to top, #a2d9ff, #98fb98)",
+        ambience: "assets/ambience-forest.mp3"
+      },
+      {
+        name: "playa",
+        background: "linear-gradient(to top, #87ceeb, #f0e68c)",
+        ambience: "assets/ambience-beach.mp3"
+      }
+    ];
+
+    let current = 0;
+
+    function switchLandscape() {
+      current = (current + 1) % landscapes.length;
+      document.body.style.background = landscapes[current].background;
+
+      const audio = document.getElementById('ambience');
+      audio.src = landscapes[current].ambience;
+      audio.play();
+    }
+
+    function playChirp() {
+      document.getElementById('chirpSound').play();
+    }
+
+    document.body.style.background = landscapes[0].background;
+  </script>
+
+</body>
+</html>
