@@ -44,13 +44,34 @@
             </div>
             <!-- Shape Controls -->
             <div class="flex flex-col items-center">
-                <label class="text-gray-700 font-medium mb-2 text-sm">Forma</label>
+                <label class="text-gray-700 font-medium mb-2 text-sm">Forma y Sonido</label>
+                <!-- FIX: Shape controls now contain dropdowns for sound selection -->
                 <div id="shapeControls" class="flex flex-row justify-center items-center gap-2 p-2 bg-gray-100 rounded-xl">
-                    <button id="shapeCircleButton" title="Círculo" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><circle cx="12" cy="12" r="10"/></svg></button>
-                    <button id="shapeTriangleButton" title="Triángulo" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2L2 22H22L12 2Z"/></svg></button>
-                    <button id="shapeSquareButton" title="Cuadrado" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
-                    <button id="shapeStarButton" title="Estrella" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></button>
-                    <button id="shapeLineButton" title="Línea" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="w-6 h-6"><line x1="4" y1="12" x2="20" y2="12"/></svg></button>
+                    <!-- Circle -->
+                    <div class="relative">
+                        <button id="shapeCircleButton" data-shape="circle" title="Círculo" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><circle cx="12" cy="12" r="10"/></svg></button>
+                        <div id="shape-menu-circle" class="shape-sound-menu hidden absolute z-20 mt-2 w-36 bg-white rounded-md shadow-lg border border-gray-200"></div>
+                    </div>
+                    <!-- Triangle -->
+                    <div class="relative">
+                        <button id="shapeTriangleButton" data-shape="triangle" title="Triángulo" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2L2 22H22L12 2Z"/></svg></button>
+                        <div id="shape-menu-triangle" class="shape-sound-menu hidden absolute z-20 mt-2 w-36 bg-white rounded-md shadow-lg border border-gray-200"></div>
+                    </div>
+                    <!-- Square -->
+                    <div class="relative">
+                        <button id="shapeSquareButton" data-shape="square" title="Cuadrado" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+                        <div id="shape-menu-square" class="shape-sound-menu hidden absolute z-20 mt-2 w-36 bg-white rounded-md shadow-lg border border-gray-200"></div>
+                    </div>
+                    <!-- Star -->
+                    <div class="relative">
+                        <button id="shapeStarButton" data-shape="star" title="Estrella" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></button>
+                        <div id="shape-menu-star" class="shape-sound-menu hidden absolute z-20 mt-2 w-36 bg-white rounded-md shadow-lg border border-gray-200"></div>
+                    </div>
+                    <!-- Line -->
+                    <div class="relative">
+                        <button id="shapeLineButton" data-shape="line" title="Línea" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="w-6 h-6"><line x1="4" y1="12" x2="20" y2="12"/></svg></button>
+                        <div id="shape-menu-line" class="shape-sound-menu hidden absolute z-20 mt-2 w-36 bg-white rounded-md shadow-lg border border-gray-200"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,9 +98,9 @@
                  <canvas id="relaxationCanvas" class="absolute inset-0 bg-white rounded-xl shadow-inner"></canvas>
                  <!-- Sound Mixer Panel -->
                  <div id="soundMixer" class="absolute top-0 right-0 h-full bg-gray-800/80 text-white p-3 rounded-l-xl backdrop-blur-sm transform translate-x-full w-52 overflow-y-auto">
-                     <h3 class="text-md font-bold mb-3 text-center">Mezclador de Sonido</h3>
-                     <div id="particleSoundSelectors" class="space-y-2 mb-4"></div>
-                     <h4 class="text-sm font-semibold mb-2 mt-4 border-t border-gray-600 pt-2">Sonido Ambiental</h4>
+                     <!-- FIX: Title changed to reflect new purpose -->
+                     <h3 class="text-md font-bold mb-3 text-center">Sonidos de Fondo</h3>
+                     <!-- FIX: Particle selectors removed from here -->
                      <div id="ambientSoundControls" class="space-y-2"></div>
                  </div>
             </div>
@@ -100,10 +121,21 @@
         const soundLibrary = {};
         const ambientSounds = {};
         let mixerSettings = {
-            circle: 'melody_circle', triangle: 'melody_triangle', square: 'melody_square', star: 'melody_star', line: 'click',
+            circle: 'nota', triangle: 'nota', square: 'nota', star: 'nota', line: 'click',
             pop: 'pop', pushpin: 'pushpin'
         };
         let lastTraceSoundTime = 0;
+        const shapeNotes = { circle: "C4", triangle: "E4", square: "G4", star: "A4", line: "B4" };
+        const melodies = {
+            circle: ["C4", "E4", "G4", "C5"],
+            triangle: ["D4", "F4", "A4", "D5"],
+            square: ["G3", "C4", "D4", "G4"],
+            star: ["A3", "E4", "A4", "C5"],
+            line: ["B4", "A4", "G4", "F4"]
+        };
+        let melodyTrackers = {
+            circle: 0, triangle: 0, square: 0, star: 0, line: 0
+        };
 
         // --- CLASSES (Particle, Pushpin) ---
         class Particle {
@@ -178,42 +210,41 @@
                 pushpin: new Tone.MembraneSynth({ pitchDecay: 0.01, volume: -5 }).connect(limiter)
             };
 
-            soundLibrary.melody_circle = { name: 'Melodía 1', play: () => { new Tone.Sequence((time, note) => { synths.melody.triggerAttackRelease(note, "16n", time); }, ["C4", "E4", "G4"], "8n").start(0).stop("4n"); } };
-            soundLibrary.melody_triangle = { name: 'Melodía 2', play: () => { new Tone.Sequence((time, note) => { synths.melody.triggerAttackRelease(note, "16n", time); }, ["E4", "G4", "B4"], "8n").start(0).stop("4n"); } };
-            soundLibrary.melody_square = { name: 'Melodía 3', play: () => { new Tone.Sequence((time, note) => { synths.melody.triggerAttackRelease(note, "16n", time); }, ["G4", "B4", "D5"], "8n").start(0).stop("4n"); } };
-            soundLibrary.melody_star = { name: 'Melodía 4', play: () => { new Tone.Sequence((time, note) => { synths.melody.triggerAttackRelease(note, "16n", time); }, ["A4", "C5", "E5"], "8n").start(0).stop("4n"); } };
+            soundLibrary.nota = { name: 'Nota', play: (shape) => { const note = shapeNotes[shape] || "C4"; synths.melody.triggerAttackRelease(note, "8n"); } };
+            soundLibrary.melody = { name: 'Melodía', play: (shape) => { const melody = melodies[shape]; if (!melody) return; let tracker = melodyTrackers[shape]; const note = melody[tracker]; synths.melody.triggerAttackRelease(note, "8n"); melodyTrackers[shape] = (tracker + 1) % melody.length; } };
             soundLibrary.drops = { name: 'Gotas', play: () => synths.drops.triggerAttackRelease("C3", "8n") };
             soundLibrary.sweep = { name: 'Barrido', play: () => { synths.sweep.frequency.value = "C4"; synths.sweep.frequency.rampTo("C5", 0.1); synths.sweep.triggerAttackRelease("16n"); } };
             soundLibrary.pluck = { name: 'Pulsación', play: () => synths.pluck.triggerAttackRelease("C4", "8n") };
             soundLibrary.click = { name: 'Chasquido', play: () => synths.click.triggerAttackRelease("16n") };
             soundLibrary.pop = { name: 'Pop', play: () => synths.pop.triggerAttackRelease("C3", "8n") };
             soundLibrary.pushpin = { name: 'Chincheta', play: () => synths.pushpin.triggerAttackRelease("C2", "8n") };
-
-            ambientSounds.sea = { name: 'Olas del Mar', player: new Tone.Noise('brown').start(0), filter: new Tone.AutoFilter('8n').start(0), lfo: new Tone.LFO('0.2Hz', 400, 1000).start(0), volume: new Tone.Volume(-25).connect(limiter), isPlaying: false };
+            
+            ambientSounds.sea = { name: 'Olas del Mar', player: new Tone.Noise('brown'), filter: new Tone.AutoFilter('8n'), lfo: new Tone.LFO('0.2Hz', 400, 1000), volume: new Tone.Volume(-25).connect(limiter), isPlaying: false };
             ambientSounds.sea.player.connect(ambientSounds.sea.filter); ambientSounds.sea.filter.connect(ambientSounds.sea.volume); ambientSounds.sea.lfo.connect(ambientSounds.sea.filter.filter.frequency);
             
-            ambientSounds.rain = { name: 'Lluvia Suave', player: new Tone.Noise('pink').start(0), filter: new Tone.Filter(800, 'lowpass'), volume: new Tone.Volume(-20).connect(limiter), isPlaying: false };
+            ambientSounds.rain = { name: 'Lluvia Suave', player: new Tone.Noise('pink'), filter: new Tone.Filter(800, 'lowpass'), volume: new Tone.Volume(-20).connect(limiter), isPlaying: false };
             ambientSounds.rain.player.connect(ambientSounds.rain.filter); ambientSounds.rain.filter.connect(ambientSounds.rain.volume);
 
-            ambientSounds.river = { name: 'Río', player: new Tone.Noise('brown').start(0), filter: new Tone.Filter(600, 'lowpass'), lfo: new Tone.LFO('0.5Hz', 500, 700).start(0), volume: new Tone.Volume(-22).connect(limiter), isPlaying: false };
+            ambientSounds.river = { name: 'Río', player: new Tone.Noise('brown'), filter: new Tone.Filter(600, 'lowpass'), lfo: new Tone.LFO('0.5Hz', 500, 700), volume: new Tone.Volume(-22).connect(limiter), isPlaying: false };
             ambientSounds.river.player.connect(ambientSounds.river.filter); ambientSounds.river.filter.connect(ambientSounds.river.volume); ambientSounds.river.lfo.connect(ambientSounds.river.filter.frequency);
 
-            ambientSounds.fire = { name: 'Chimenea', player: new Tone.Noise('pink').start(0), filter: new Tone.Filter(1000, 'lowpass'), lfo: new Tone.LFO('2Hz', 200, 1000).start(0), volume: new Tone.Volume(-18).connect(limiter), isPlaying: false };
+            ambientSounds.fire = { name: 'Chimenea', player: new Tone.Noise('pink'), filter: new Tone.Filter(1000, 'lowpass'), lfo: new Tone.LFO('2Hz', 200, 1000), volume: new Tone.Volume(-18).connect(limiter), isPlaying: false };
             ambientSounds.fire.player.connect(ambientSounds.fire.filter); ambientSounds.fire.filter.connect(ambientSounds.fire.volume); ambientSounds.fire.lfo.connect(ambientSounds.fire.filter.frequency);
-            
-            Object.values(ambientSounds).forEach(s => { if(s.player) s.player.mute = true; });
         }
 
         function playSound(soundName, isTraceSound = false) {
             if (Tone.Master.mute || !soundInitialized) return;
+            
             const sound = soundLibrary[soundName];
             if (!sound || !sound.play) return;
+
             if (isTraceSound) {
                 const now = Tone.now();
-                if (now - lastTraceSoundTime < 0.2) return; // Throttle to 200ms for melodies
+                if (now - lastTraceSoundTime < 0.2) return;
                 lastTraceSoundTime = now;
             }
-            sound.play();
+            
+            sound.play(currentShape);
         }
 
         // --- CORE FUNCTIONS ---
@@ -307,20 +338,52 @@
 
         function setMode(newMode) { activeMode = activeMode === newMode ? 'default' : newMode; stopBubbleGeneration(); if (activeMode === 'bubbles') startBubbleGeneration(); updateAllButtonStates(); }
 
-        function populateMixer() {
-            const particleSelectorsContainer = document.getElementById('particleSoundSelectors');
-            const ambientControlsContainer = document.getElementById('ambientSoundControls');
-            particleSelectorsContainer.innerHTML = ''; ambientControlsContainer.innerHTML = '';
-            const shapes = { circle: 'Círculo', triangle: 'Triángulo', square: 'Cuadrado', star: 'Estrella', line: 'Línea' };
-            for (const shape in shapes) {
-                let selectorHTML = `<div class="flex items-center justify-between"><label for="mixer-${shape}" class="text-sm">${shapes[shape]}</label><select id="mixer-${shape}" data-shape="${shape}" class="mixer-selector bg-gray-700 text-white text-xs rounded-md p-1 border border-gray-600 focus:ring-orange-500 focus:border-orange-500 w-24">`;
-                for (const soundKey in soundLibrary) {
-                    if (['pop', 'pushpin'].includes(soundKey)) continue;
-                    selectorHTML += `<option value="${soundKey}" ${mixerSettings[shape] === soundKey ? 'selected' : ''}>${soundLibrary[soundKey].name}</option>`;
-                }
-                selectorHTML += `</select></div>`;
-                particleSelectorsContainer.innerHTML += selectorHTML;
+        // --- FIX: New function to create shape-sound menus ---
+        function createShapeSoundMenus() {
+            let soundOptionsHTML = '<ul class="py-1">';
+            for (const soundKey in soundLibrary) {
+                if (['pop', 'pushpin'].includes(soundKey)) continue;
+                soundOptionsHTML += `
+                    <li>
+                        <a href="#" data-sound="${soundKey}" class="shape-sound-option block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">
+                            ${soundLibrary[soundKey].name}
+                        </a>
+                    </li>
+                `;
             }
+            soundOptionsHTML += '</ul>';
+
+            document.querySelectorAll('.shape-sound-menu').forEach(menu => {
+                menu.innerHTML = soundOptionsHTML;
+            });
+
+            // Add event listeners for the new options
+            document.querySelectorAll('.shape-sound-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const soundKey = e.currentTarget.dataset.sound;
+                    const shapeMenu = e.currentTarget.closest('.shape-sound-menu');
+                    const shape = shapeMenu.id.replace('shape-menu-', '');
+                    
+                    // Update settings and UI
+                    mixerSettings[shape] = soundKey;
+                    currentShape = shape;
+
+                    // Update selected button style
+                    document.querySelectorAll('.shape-button').forEach(btn => btn.classList.remove('selected'));
+                    document.getElementById(`shape${shape.charAt(0).toUpperCase() + shape.slice(1)}Button`).classList.add('selected');
+                    
+                    // Close all menus
+                    document.querySelectorAll('.shape-sound-menu').forEach(m => m.classList.add('hidden'));
+                });
+            });
+        }
+
+        // --- FIX: Simplified mixer population ---
+        function populateMixer() {
+            const ambientControlsContainer = document.getElementById('ambientSoundControls');
+            ambientControlsContainer.innerHTML = '';
             
             let ambientSelectorHTML = `<div class="flex flex-col space-y-2"><label for="ambient-selector" class="text-sm">Sonido de Fondo</label><select id="ambient-selector" class="bg-gray-700 text-white text-xs rounded-md p-1 border border-gray-600 focus:ring-orange-500 focus:border-orange-500 w-full">`;
             ambientSelectorHTML += `<option value="none">Ninguno</option>`;
@@ -330,7 +393,6 @@
             ambientSelectorHTML += `</select></div>`;
             ambientControlsContainer.innerHTML = ambientSelectorHTML;
 
-            document.querySelectorAll('.mixer-selector').forEach(sel => sel.addEventListener('change', e => { mixerSettings[e.target.dataset.shape] = e.target.value; }));
             document.getElementById('ambient-selector').addEventListener('change', e => {
                 const selectedSound = e.target.value;
                 for (const key in ambientSounds) {
@@ -341,15 +403,18 @@
 
         function toggleAmbientSound(soundKey, shouldPlay) {
             const sound = ambientSounds[soundKey]; if (!sound) return;
+
             if (shouldPlay && !sound.isPlaying) {
                 if (Tone.Transport.state !== 'started') { Tone.Transport.start(); }
+                if (sound.player && sound.player.state !== 'started') sound.player.start();
+                if (sound.filter && typeof sound.filter.start === 'function' && sound.filter.state !== 'started') sound.filter.start();
+                if (sound.lfo && sound.lfo.state !== 'started') sound.lfo.start();
                 sound.isPlaying = true;
                 if (sound.player) sound.player.mute = false;
-                if (sound.sequence) { sound.sequence.mute = false; sound.sequence.start(0); }
+
             } else if (!shouldPlay && sound.isPlaying) {
                 sound.isPlaying = false;
                 if (sound.player) sound.player.mute = true;
-                if (sound.sequence) { sound.sequence.mute = true; sound.sequence.stop(0); }
             }
         }
 
@@ -371,6 +436,7 @@
                 await Tone.start();
                 setupSounds();
                 populateMixer();
+                createShapeSoundMenus(); // Create the new menus
                 soundInitialized = true;
             }
             if (volumeValue === 0) {
@@ -389,7 +455,24 @@
         document.getElementById('toggleMixerButton').addEventListener('click', () => { isMixerOpen = !isMixerOpen; document.getElementById('soundMixer').classList.toggle('translate-x-full', !isMixerOpen); updateAllButtonStates(); });
         document.getElementById('saveCanvasButton').addEventListener('click', saveCanvasAsImage);
         ['Persistent', 'Creative', 'Bubbles', 'Pushpins'].forEach(m => { document.getElementById(`toggle${m}ModeButton`).addEventListener('click', () => setMode(m.toLowerCase())) });
-        document.querySelectorAll('.shape-button').forEach(b => { b.addEventListener('click', () => { document.querySelectorAll('.shape-button').forEach(btn => btn.classList.remove('selected')); b.classList.add('selected'); currentShape = b.id.replace('shape', '').replace('Button', '').toLowerCase() }) });
+        
+        // --- FIX: Shape button listeners now toggle menus ---
+        document.querySelectorAll('.shape-button').forEach(b => {
+            b.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const shape = b.dataset.shape;
+                const menu = document.getElementById(`shape-menu-${shape}`);
+                const isHidden = menu.classList.contains('hidden');
+
+                // Close all other menus
+                document.querySelectorAll('.shape-sound-menu').forEach(m => m.classList.add('hidden'));
+
+                if (isHidden) {
+                    menu.classList.remove('hidden');
+                }
+            });
+        });
+
         document.getElementById('speedSlider').addEventListener('input', e => animationSpeed = parseFloat(e.target.value));
         document.getElementById('particleSizeSlider').addEventListener('input', e => currentParticleSize = parseFloat(e.target.value));
         document.getElementById('particleOpacitySlider').addEventListener('input', e => currentParticleOpacity = parseFloat(e.target.value));
@@ -407,7 +490,7 @@
                         createExplosion(p.x, p.y); 
                         particles.splice(i, 1); 
                         bubblePopped = true;
-                        break; // Pop one at a time
+                        break;
                     } 
                 }
             }
@@ -431,6 +514,11 @@
         canvas.addEventListener('mousemove', handleInteractionMove); canvas.addEventListener('touchmove', handleInteractionMove);
         canvas.addEventListener('mouseup', () => isDragging = false); canvas.addEventListener('mouseleave', () => isDragging = false);
         canvas.addEventListener('touchend', () => isDragging = false); canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+        // Global listener to close menus
+        window.addEventListener('click', () => {
+            document.querySelectorAll('.shape-sound-menu').forEach(m => m.classList.add('hidden'));
+        });
 
         window.addEventListener('load', () => {
             resizeCanvas();
