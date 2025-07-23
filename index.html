@@ -31,14 +31,28 @@
     <!-- Main container -->
     <div class="flex flex-col items-center justify-center w-full max-w-7xl p-4 sm:p-6 bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl space-y-4">
 
-        <!-- Sliders -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-4 w-full">
-            <div class="flex flex-col items-center w-full"><label for="speedSlider" class="text-gray-700 font-medium mb-2 text-sm">Velocidad</label><input type="range" id="speedSlider" min="0.1" max="5" value="1" step="0.05" class="w-full"></div>
-            <div class="flex flex-col items-center w-full"><label for="particleSizeSlider" class="text-gray-700 font-medium mb-2 text-sm">Tamaño</label><input type="range" id="particleSizeSlider" min="1" max="50" value="15" class="w-full"></div>
-            <div class="flex flex-col items-center w-full"><label for="particleOpacitySlider" class="text-gray-700 font-medium mb-2 text-sm">Opacidad</label><input type="range" id="particleOpacitySlider" min="0.1" max="1" value="1" step="0.01" class="w-full"></div>
-            <div class="flex flex-col items-center w-full"><label for="particleDensitySlider" class="text-gray-700 font-medium mb-2 text-sm">Densidad</label><input type="range" id="particleDensitySlider" min="1" max="20" value="5" class="w-full"></div>
-            <div class="flex flex-col items-center w-full hidden" id="creativePersistenceControls"><label for="creativePersistenceSlider" class="text-gray-700 font-medium mb-2 text-center text-sm" id="creativePersistenceLabel">Duración</label><input type="range" id="creativePersistenceSlider" min="1" max="500" value="100" class="w-full"></div>
-            <div class="flex flex-col items-center w-full"><label for="volumeSlider" class="text-gray-700 font-medium mb-2 text-sm">Volumen</label><input type="range" id="volumeSlider" min="0" max="100" value="0" class="w-full"></div>
+        <!-- Top Controls Area -->
+        <div class="w-full flex flex-col lg:flex-row items-center justify-center gap-x-6 gap-y-4">
+            <!-- Sliders -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-4 w-full lg:w-auto flex-grow">
+                <div class="flex flex-col items-center w-full"><label for="speedSlider" class="text-gray-700 font-medium mb-2 text-sm">Velocidad</label><input type="range" id="speedSlider" min="0.1" max="5" value="1" step="0.05" class="w-full"></div>
+                <div class="flex flex-col items-center w-full"><label for="particleSizeSlider" class="text-gray-700 font-medium mb-2 text-sm">Tamaño</label><input type="range" id="particleSizeSlider" min="1" max="50" value="15" class="w-full"></div>
+                <div class="flex flex-col items-center w-full"><label for="particleOpacitySlider" class="text-gray-700 font-medium mb-2 text-sm">Opacidad</label><input type="range" id="particleOpacitySlider" min="0.1" max="1" value="1" step="0.01" class="w-full"></div>
+                <div class="flex flex-col items-center w-full"><label for="particleDensitySlider" class="text-gray-700 font-medium mb-2 text-sm">Densidad</label><input type="range" id="particleDensitySlider" min="1" max="20" value="5" class="w-full"></div>
+                <div class="flex flex-col items-center w-full hidden" id="creativePersistenceControls"><label for="creativePersistenceSlider" class="text-gray-700 font-medium mb-2 text-center text-sm" id="creativePersistenceLabel">Duración</label><input type="range" id="creativePersistenceSlider" min="1" max="500" value="100" class="w-full"></div>
+                <div class="flex flex-col items-center w-full"><label for="volumeSlider" class="text-gray-700 font-medium mb-2 text-sm">Volumen</label><input type="range" id="volumeSlider" min="0" max="100" value="0" class="w-full"></div>
+            </div>
+            <!-- Shape Controls -->
+            <div class="flex flex-col items-center">
+                <label class="text-gray-700 font-medium mb-2 text-sm">Forma</label>
+                <div id="shapeControls" class="flex flex-row justify-center items-center gap-2 p-2 bg-gray-100 rounded-xl">
+                    <button id="shapeCircleButton" title="Círculo" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><circle cx="12" cy="12" r="10"/></svg></button>
+                    <button id="shapeTriangleButton" title="Triángulo" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2L2 22H22L12 2Z"/></svg></button>
+                    <button id="shapeSquareButton" title="Cuadrado" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+                    <button id="shapeStarButton" title="Estrella" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></button>
+                    <button id="shapeLineButton" title="Línea" class="shape-button p-2 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="w-6 h-6"><line x1="4" y1="12" x2="20" y2="12"/></svg></button>
+                </div>
+            </div>
         </div>
 
         <!-- Main content area -->
@@ -62,21 +76,12 @@
             <div class="flex-grow h-full w-full relative">
                  <canvas id="relaxationCanvas" class="absolute inset-0 bg-white rounded-xl shadow-inner"></canvas>
                  <!-- Sound Mixer Panel -->
-                 <div id="soundMixer" class="absolute top-0 right-0 h-full bg-gray-800/80 text-white p-3 rounded-l-xl backdrop-blur-sm transform translate-x-full w-48 overflow-y-auto">
-                     <h3 class="text-md font-bold mb-3 text-center">Mezclador</h3>
+                 <div id="soundMixer" class="absolute top-0 right-0 h-full bg-gray-800/80 text-white p-3 rounded-l-xl backdrop-blur-sm transform translate-x-full w-52 overflow-y-auto">
+                     <h3 class="text-md font-bold mb-3 text-center">Mezclador de Sonido</h3>
                      <div id="particleSoundSelectors" class="space-y-2 mb-4"></div>
-                     <h4 class="text-sm font-semibold mb-2 mt-4 border-t border-gray-600 pt-2">Ambiente</h4>
+                     <h4 class="text-sm font-semibold mb-2 mt-4 border-t border-gray-600 pt-2">Sonido Ambiental</h4>
                      <div id="ambientSoundControls" class="space-y-2"></div>
                  </div>
-            </div>
-
-            <!-- Right Column: Shape Controls -->
-            <div id="shapeControls" class="flex flex-col flex-nowrap justify-start items-center gap-2 p-2 bg-gray-100 rounded-xl w-16 overflow-y-auto">
-                <button id="shapeCircleButton" title="Círculo" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8"><circle cx="12" cy="12" r="10"/></svg></button>
-                <button id="shapeTriangleButton" title="Triángulo" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8"><path d="M12 2L2 22H22L12 2Z"/></svg></button>
-                <button id="shapeSquareButton" title="Cuadrado" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
-                <button id="shapeStarButton" title="Estrella" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></button>
-                <button id="shapeLineButton" title="Línea" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="w-8 h-8"><line x1="4" y1="12" x2="20" y2="12"/></svg></button>
             </div>
         </div>
     </div>
@@ -95,11 +100,10 @@
         const soundLibrary = {};
         const ambientSounds = {};
         let mixerSettings = {
-            circle: 'nota', triangle: 'nota', square: 'nota', star: 'nota', line: 'click',
+            circle: 'melody_circle', triangle: 'melody_triangle', square: 'melody_square', star: 'melody_star', line: 'click',
             pop: 'pop', pushpin: 'pushpin'
         };
         let lastTraceSoundTime = 0;
-        const shapeNotes = { circle: "C4", triangle: "E4", square: "G4", star: "A4" };
 
         // --- CLASSES (Particle, Pushpin) ---
         class Particle {
@@ -163,54 +167,53 @@
 
         // --- SOUND ENGINE (REFACTORED) ---
         function setupSounds() {
-            soundLibrary.nota = { name: 'Nota', synth: new Tone.PolySynth(Tone.Synth, { oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }, volume: -12 }).toDestination() };
-            soundLibrary.drops = { name: 'Gotas', synth: new Tone.MembraneSynth({ octaves: 10, volume: -5 }).toDestination() };
-            soundLibrary.sweep = { name: 'Barrido', synth: new Tone.Synth({ volume: -15, envelope: { attack: 0.01, decay: 0.2, sustain: 0 } }).toDestination() };
-            soundLibrary.pluck = { name: 'Pulsación', synth: new Tone.PluckSynth({ volume: -8 }).toDestination() };
-            soundLibrary.click = { name: 'Chasquido', synth: new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.05, sustain: 0 }, volume: -20 }).toDestination() };
-            soundLibrary.silence = { name: 'Silencio', synth: null };
-            soundLibrary.pop = { name: 'Pop', synth: new Tone.MembraneSynth({ volume: -5 }).toDestination() };
-            soundLibrary.pushpin = { name: 'Chincheta', synth: new Tone.MembraneSynth({ pitchDecay: 0.01, volume: -5 }).toDestination() };
+            const limiter = new Tone.Limiter(-1).toDestination();
+            const synths = {
+                melody: new Tone.PolySynth(Tone.Synth, { oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }, volume: -12 }).connect(limiter),
+                drops: new Tone.MembraneSynth({ octaves: 10, volume: -5 }).connect(limiter),
+                sweep: new Tone.Synth({ volume: -15, envelope: { attack: 0.01, decay: 0.2, sustain: 0 } }).connect(limiter),
+                pluck: new Tone.PluckSynth({ volume: -8 }).connect(limiter),
+                click: new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.05, sustain: 0 }, volume: -20 }).connect(limiter),
+                pop: new Tone.MembraneSynth({ volume: -5 }).connect(limiter),
+                pushpin: new Tone.MembraneSynth({ pitchDecay: 0.01, volume: -5 }).connect(limiter)
+            };
 
-            ambientSounds.sea = { name: 'Mar', player: new Tone.Noise('brown').start(0), filter: new Tone.AutoFilter('4n').start(0), lfo: new Tone.LFO('0.2Hz', 400, 1000).start(0), volume: new Tone.Volume(-25).toDestination(), isPlaying: false };
+            soundLibrary.melody_circle = { name: 'Melodía 1', play: () => { new Tone.Sequence((time, note) => { synths.melody.triggerAttackRelease(note, "16n", time); }, ["C4", "E4", "G4"], "8n").start(0).stop("4n"); } };
+            soundLibrary.melody_triangle = { name: 'Melodía 2', play: () => { new Tone.Sequence((time, note) => { synths.melody.triggerAttackRelease(note, "16n", time); }, ["E4", "G4", "B4"], "8n").start(0).stop("4n"); } };
+            soundLibrary.melody_square = { name: 'Melodía 3', play: () => { new Tone.Sequence((time, note) => { synths.melody.triggerAttackRelease(note, "16n", time); }, ["G4", "B4", "D5"], "8n").start(0).stop("4n"); } };
+            soundLibrary.melody_star = { name: 'Melodía 4', play: () => { new Tone.Sequence((time, note) => { synths.melody.triggerAttackRelease(note, "16n", time); }, ["A4", "C5", "E5"], "8n").start(0).stop("4n"); } };
+            soundLibrary.drops = { name: 'Gotas', play: () => synths.drops.triggerAttackRelease("C3", "8n") };
+            soundLibrary.sweep = { name: 'Barrido', play: () => { synths.sweep.frequency.value = "C4"; synths.sweep.frequency.rampTo("C5", 0.1); synths.sweep.triggerAttackRelease("16n"); } };
+            soundLibrary.pluck = { name: 'Pulsación', play: () => synths.pluck.triggerAttackRelease("C4", "8n") };
+            soundLibrary.click = { name: 'Chasquido', play: () => synths.click.triggerAttackRelease("16n") };
+            soundLibrary.pop = { name: 'Pop', play: () => synths.pop.triggerAttackRelease("C3", "8n") };
+            soundLibrary.pushpin = { name: 'Chincheta', play: () => synths.pushpin.triggerAttackRelease("C2", "8n") };
+
+            ambientSounds.sea = { name: 'Olas del Mar', player: new Tone.Noise('brown').start(0), filter: new Tone.AutoFilter('8n').start(0), lfo: new Tone.LFO('0.2Hz', 400, 1000).start(0), volume: new Tone.Volume(-25).connect(limiter), isPlaying: false };
             ambientSounds.sea.player.connect(ambientSounds.sea.filter); ambientSounds.sea.filter.connect(ambientSounds.sea.volume); ambientSounds.sea.lfo.connect(ambientSounds.sea.filter.filter.frequency);
-            ambientSounds.sea.player.mute = true;
+            
+            ambientSounds.rain = { name: 'Lluvia Suave', player: new Tone.Noise('pink').start(0), filter: new Tone.Filter(800, 'lowpass'), volume: new Tone.Volume(-20).connect(limiter), isPlaying: false };
+            ambientSounds.rain.player.connect(ambientSounds.rain.filter); ambientSounds.rain.filter.connect(ambientSounds.rain.volume);
 
-            ambientSounds.birds = { name: 'Pájaros', synth: new Tone.FMSynth({ harmonicity: 1.5, modulationIndex: 5, envelope: { attack: 0.01, decay: 0.1 } }), volume: new Tone.Volume(-15).toDestination(), sequence: null, isPlaying: false };
-            ambientSounds.birds.synth.connect(ambientSounds.birds.volume);
-            ambientSounds.birds.sequence = new Tone.Sequence((time, note) => { ambientSounds.birds.synth.triggerAttackRelease(note, '32n', time); }, ['C6', 'E6', 'G6', 'A6', null, 'E6', 'G6', null, 'A6'], '8n');
-            ambientSounds.birds.sequence.probability = 0.4; ambientSounds.birds.sequence.humanize = true; ambientSounds.birds.sequence.mute = true;
+            ambientSounds.river = { name: 'Río', player: new Tone.Noise('brown').start(0), filter: new Tone.Filter(600, 'lowpass'), lfo: new Tone.LFO('0.5Hz', 500, 700).start(0), volume: new Tone.Volume(-22).connect(limiter), isPlaying: false };
+            ambientSounds.river.player.connect(ambientSounds.river.filter); ambientSounds.river.filter.connect(ambientSounds.river.volume); ambientSounds.river.lfo.connect(ambientSounds.river.filter.frequency);
+
+            ambientSounds.fire = { name: 'Chimenea', player: new Tone.Noise('pink').start(0), filter: new Tone.Filter(1000, 'lowpass'), lfo: new Tone.LFO('2Hz', 200, 1000).start(0), volume: new Tone.Volume(-18).connect(limiter), isPlaying: false };
+            ambientSounds.fire.player.connect(ambientSounds.fire.filter); ambientSounds.fire.filter.connect(ambientSounds.fire.volume); ambientSounds.fire.lfo.connect(ambientSounds.fire.filter.frequency);
+            
+            Object.values(ambientSounds).forEach(s => { if(s.player) s.player.mute = true; });
         }
 
         function playSound(soundName, isTraceSound = false) {
             if (Tone.Master.mute || !soundInitialized) return;
             const sound = soundLibrary[soundName];
-            if (!sound || !sound.synth) return;
+            if (!sound || !sound.play) return;
             if (isTraceSound) {
                 const now = Tone.now();
-                if (now - lastTraceSoundTime < 0.1) return;
+                if (now - lastTraceSoundTime < 0.2) return; // Throttle to 200ms for melodies
                 lastTraceSoundTime = now;
             }
-            switch(soundName) {
-                case 'nota':
-                    const note = shapeNotes[currentShape] || "C4";
-                    sound.synth.triggerAttackRelease(note, "8n");
-                    break;
-                case 'drops': case 'pushpin': case 'pop':
-                    sound.synth.triggerAttackRelease("C3", "8n");
-                    break;
-                case 'pluck':
-                    sound.synth.triggerAttackRelease("C4", "8n");
-                    break;
-                case 'sweep':
-                    sound.synth.frequency.value = "C4";
-                    sound.synth.frequency.rampTo("C5", 0.1);
-                    sound.synth.triggerAttackRelease("16n");
-                    break;
-                case 'click':
-                    sound.synth.triggerAttackRelease("16n");
-                    break;
-            }
+            sound.play();
         }
 
         // --- CORE FUNCTIONS ---
@@ -299,7 +302,6 @@
             document.getElementById('togglePushpinsModeButton').classList.toggle('bg-teal-800', activeMode === 'pushpins');
             document.getElementById('eraseBrushButton').classList.toggle('bg-gray-700', isEraseBrushActive);
             document.getElementById('creativePersistenceControls').classList.toggle('hidden', activeMode !== 'creative');
-            document.getElementById('shapeControls').classList.toggle('hidden', activeMode === 'bubbles' || activeMode === 'pushpins' || isMixerOpen); // FIX: Hide shapes when mixer is open
             document.getElementById('toggleMixerButton').classList.toggle('bg-orange-700', isMixerOpen);
         }
 
@@ -309,7 +311,7 @@
             const particleSelectorsContainer = document.getElementById('particleSoundSelectors');
             const ambientControlsContainer = document.getElementById('ambientSoundControls');
             particleSelectorsContainer.innerHTML = ''; ambientControlsContainer.innerHTML = '';
-            const shapes = { circle: iconLib.bubbles, triangle: `<svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M12 2L2 22H22L12 2Z" fill="currentColor"/></svg>`, square: `<svg viewBox="0 0 24 24" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/></svg>`, star: iconLib.creative, line: `<svg viewBox="0 0 24 24" class="w-4 h-4"><line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="3"/></svg>` };
+            const shapes = { circle: 'Círculo', triangle: 'Triángulo', square: 'Cuadrado', star: 'Estrella', line: 'Línea' };
             for (const shape in shapes) {
                 let selectorHTML = `<div class="flex items-center justify-between"><label for="mixer-${shape}" class="text-sm">${shapes[shape]}</label><select id="mixer-${shape}" data-shape="${shape}" class="mixer-selector bg-gray-700 text-white text-xs rounded-md p-1 border border-gray-600 focus:ring-orange-500 focus:border-orange-500 w-24">`;
                 for (const soundKey in soundLibrary) {
@@ -319,29 +321,36 @@
                 selectorHTML += `</select></div>`;
                 particleSelectorsContainer.innerHTML += selectorHTML;
             }
+            
+            let ambientSelectorHTML = `<div class="flex flex-col space-y-2"><label for="ambient-selector" class="text-sm">Sonido de Fondo</label><select id="ambient-selector" class="bg-gray-700 text-white text-xs rounded-md p-1 border border-gray-600 focus:ring-orange-500 focus:border-orange-500 w-full">`;
+            ambientSelectorHTML += `<option value="none">Ninguno</option>`;
             for (const ambientKey in ambientSounds) {
-                const sound = ambientSounds[ambientKey];
-                let controlHTML = `<div class="flex items-center justify-between"><label class="text-sm">${sound.name}</label><button id="ambient-${ambientKey}" data-ambient="${ambientKey}" class="ambient-toggle px-2 py-1 text-xs rounded-md ${sound.isPlaying ? 'bg-green-500' : 'bg-gray-600'}">Play</button></div>`;
-                ambientControlsContainer.innerHTML += controlHTML;
+                ambientSelectorHTML += `<option value="${ambientKey}">${ambientSounds[ambientKey].name}</option>`;
             }
-            ambientControlsContainer.innerHTML += `<div class="pt-2"><label for="ambient-volume" class="text-xs">Volumen</label><input type="range" id="ambient-volume" min="-40" max="0" value="-25" class="w-full"></div>`;
+            ambientSelectorHTML += `</select></div>`;
+            ambientControlsContainer.innerHTML = ambientSelectorHTML;
+
             document.querySelectorAll('.mixer-selector').forEach(sel => sel.addEventListener('change', e => { mixerSettings[e.target.dataset.shape] = e.target.value; }));
-            document.querySelectorAll('.ambient-toggle').forEach(btn => btn.addEventListener('click', e => { toggleAmbientSound(e.target.dataset.ambient); }));
-            document.getElementById('ambient-volume').addEventListener('input', e => {
-                const vol = parseFloat(e.target.value);
-                Object.values(ambientSounds).forEach(s => { if (s.volume) s.volume.volume.value = vol; });
+            document.getElementById('ambient-selector').addEventListener('change', e => {
+                const selectedSound = e.target.value;
+                for (const key in ambientSounds) {
+                    toggleAmbientSound(key, key === selectedSound);
+                }
             });
         }
 
-        function toggleAmbientSound(soundKey) {
+        function toggleAmbientSound(soundKey, shouldPlay) {
             const sound = ambientSounds[soundKey]; if (!sound) return;
-            if (!sound.isPlaying && Tone.Transport.state !== 'started') { Tone.Transport.start(); }
-            sound.isPlaying = !sound.isPlaying;
-            if (sound.player) { sound.player.mute = !sound.isPlaying; }
-            if (sound.sequence) { sound.sequence.mute = !sound.isPlaying; if(!sound.isPlaying) {sound.sequence.stop(0);} else {sound.sequence.start(0);} }
-            const btn = document.getElementById(`ambient-${soundKey}`);
-            btn.textContent = sound.isPlaying ? 'Pause' : 'Play';
-            btn.classList.toggle('bg-green-500', sound.isPlaying); btn.classList.toggle('bg-gray-600', !sound.isPlaying);
+            if (shouldPlay && !sound.isPlaying) {
+                if (Tone.Transport.state !== 'started') { Tone.Transport.start(); }
+                sound.isPlaying = true;
+                if (sound.player) sound.player.mute = false;
+                if (sound.sequence) { sound.sequence.mute = false; sound.sequence.start(0); }
+            } else if (!shouldPlay && sound.isPlaying) {
+                sound.isPlaying = false;
+                if (sound.player) sound.player.mute = true;
+                if (sound.sequence) { sound.sequence.mute = true; sound.sequence.stop(0); }
+            }
         }
 
         function saveCanvasAsImage() {
@@ -390,15 +399,28 @@
         function handleInteractionStart(e) {
             isDragging = true; const { x, y } = getCanvasCoords(e);
             if (isEraseBrushActive) { eraseArea(x, y); return; }
-            switch (activeMode) {
-                case 'bubbles': for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; if (p.type === 'bubble' && Math.hypot(x - p.x, y - p.y) < p.size) { createExplosion(p.x, p.y); particles.splice(i, 1); return; } } break;
-                case 'pushpins': pushpins.push(new Pushpin(x, y)); break;
-                default: addParticles(x, y); break;
+            let bubblePopped = false;
+            if (activeMode === 'bubbles') {
+                for (let i = particles.length - 1; i >= 0; i--) { 
+                    const p = particles[i]; 
+                    if (p.type === 'bubble' && Math.hypot(x - p.x, y - p.y) < p.size) { 
+                        createExplosion(p.x, p.y); 
+                        particles.splice(i, 1); 
+                        bubblePopped = true;
+                        break; // Pop one at a time
+                    } 
+                }
+            }
+            if (activeMode === 'pushpins') {
+                if(!bubblePopped) pushpins.push(new Pushpin(x, y));
+            } else {
+                if(!bubblePopped) addParticles(x, y);
             }
         }
         function handleInteractionMove(e) {
             if (!isDragging) return; const { x, y } = getCanvasCoords(e);
-            if (isEraseBrushActive) { eraseArea(x, y); } else if (activeMode !== 'bubbles' && activeMode !== 'pushpins') { addParticles(x, y); }
+            if (isEraseBrushActive) { eraseArea(x, y); } 
+            else if (activeMode !== 'pushpins') { addParticles(x, y); }
         }
         function getCanvasCoords(e) {
             e.preventDefault(); const r = canvas.getBoundingClientRect(); let cX, cY;
