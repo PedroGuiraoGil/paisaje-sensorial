@@ -1,97 +1,431 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Paisaje Sensorial</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      transition: background 2s ease;
-      font-family: sans-serif;
-    }
-
-    #sun {
-      position: absolute;
-      top: 50px;
-      left: 50px;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, #ffeb3b, #fbc02d);
-      border-radius: 50%;
-      animation: moveSun 30s infinite linear;
-      z-index: 1;
-    }
-
-    @keyframes moveSun {
-      0%   { left: -100px; top: 150px; }
-      50%  { left: 80%; top: 50px; }
-      100% { left: -100px; top: 150px; }
-    }
-
-    .bird {
-      position: absolute;
-      top: 200px;
-      left: 100px;
-      font-size: 48px;
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    #landscapeBtn {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      padding: 10px 20px;
-      font-size: 18px;
-      border: none;
-      border-radius: 12px;
-      background-color: rgba(255, 255, 255, 0.7);
-      cursor: pointer;
-      z-index: 3;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Relajación Visual</title>
+    <!-- Tone.js for audio generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow: hidden; }
+        canvas { touch-action: none; width: 100%; height: 100%; }
+        button { transition: all 0.2s ease-in-out; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        button:active { transform: translateY(0); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .shape-button.selected { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4); }
+        input[type="range"] { -webkit-appearance: none; appearance: none; background: #e2e8f0; outline: none; border-radius: 9999px; height: 0.5rem; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 1.25rem; height: 1.25rem; background: #3b82f6; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border: 2px solid white; }
+        input[type="range"]::-moz-range-thumb { width: 1.25rem; height: 1.25rem; background: #3b82f6; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border: 2px solid white; }
+        .control-panel-button svg { width: 1.25rem; height: 1.25rem; }
+        #soundMixer { transition: transform 0.3s ease-in-out; }
+    </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-blue-100 to-purple-100 p-4 flex flex-col items-center justify-center min-h-screen">
 
-  <div id="sun"></div>
-  <div class="bird" onclick="playChirp()">🐦</div>
-  <button id="landscapeBtn" onclick="switchLandscape()">Cambiar paisaje</button>
+    <!-- Main container -->
+    <div class="flex flex-col items-center justify-center w-full max-w-7xl p-4 sm:p-6 bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl space-y-4">
 
-  <audio id="chirpSound" src="assets/bird.mp3"></audio>
-  <audio id="ambience" src="assets/ambience-forest.mp3" autoplay loop></audio>
+        <!-- Sliders -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-4 w-full">
+            <div class="flex flex-col items-center w-full"><label for="speedSlider" class="text-gray-700 font-medium mb-2 text-sm">Velocidad</label><input type="range" id="speedSlider" min="0.1" max="5" value="1" step="0.05" class="w-full"></div>
+            <div class="flex flex-col items-center w-full"><label for="particleSizeSlider" class="text-gray-700 font-medium mb-2 text-sm">Tamaño</label><input type="range" id="particleSizeSlider" min="1" max="50" value="15" class="w-full"></div>
+            <div class="flex flex-col items-center w-full"><label for="particleOpacitySlider" class="text-gray-700 font-medium mb-2 text-sm">Opacidad</label><input type="range" id="particleOpacitySlider" min="0.1" max="1" value="1" step="0.01" class="w-full"></div>
+            <div class="flex flex-col items-center w-full"><label for="particleDensitySlider" class="text-gray-700 font-medium mb-2 text-sm">Densidad</label><input type="range" id="particleDensitySlider" min="1" max="20" value="5" class="w-full"></div>
+            <div class="flex flex-col items-center w-full hidden" id="creativePersistenceControls"><label for="creativePersistenceSlider" class="text-gray-700 font-medium mb-2 text-center text-sm" id="creativePersistenceLabel">Duración</label><input type="range" id="creativePersistenceSlider" min="1" max="500" value="100" class="w-full"></div>
+            <div class="flex flex-col items-center w-full"><label for="volumeSlider" class="text-gray-700 font-medium mb-2 text-sm">Volumen</label><input type="range" id="volumeSlider" min="0" max="100" value="0" class="w-full"></div>
+        </div>
 
-  <script>
-    const landscapes = [
-      {
-        name: "bosque",
-        background: "linear-gradient(to top, #a2d9ff, #98fb98)",
-        ambience: "assets/ambience-forest.mp3"
-      },
-      {
-        name: "playa",
-        background: "linear-gradient(to top, #87ceeb, #f0e68c)",
-        ambience: "assets/ambience-beach.mp3"
-      }
-    ];
+        <!-- Main content area -->
+        <div class="flex flex-row justify-center items-stretch w-full gap-2" style="height: 65vh;">
+            
+            <!-- Left Column: Mode Controls -->
+            <div class="flex flex-col flex-nowrap justify-start items-center gap-2 p-2 bg-gray-100 rounded-xl w-16 overflow-y-auto">
+                <button id="resetButton" title="Reiniciar" class="control-panel-button p-2 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="toggleAnimationButton" title="Pausar/Reanudar" class="control-panel-button p-2 bg-purple-600 text-white rounded-lg shadow-lg hover:bg-purple-700 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="togglePersistentModeButton" title="Modo Persistente" class="control-panel-button p-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="toggleCreativeModeButton" title="Modo Creativo" class="control-panel-button p-2 bg-yellow-500 text-white rounded-lg shadow-lg hover:bg-yellow-600 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="toggleBubblesModeButton" title="Modo Burbujas" class="control-panel-button p-2 bg-pink-600 text-white rounded-lg shadow-lg hover:bg-pink-700 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="togglePushpinsModeButton" title="Modo Chinchetas" class="control-panel-button p-2 bg-teal-600 text-white rounded-lg shadow-lg hover:bg-teal-700 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="eraseBrushButton" title="Borrador" class="control-panel-button p-2 bg-gray-500 text-white rounded-lg shadow-lg hover:bg-gray-600 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="colorPaletteButton" title="Cambiar Paleta de Color" class="control-panel-button p-2 bg-cyan-500 text-white rounded-lg shadow-lg hover:bg-cyan-600 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="toggleMixerButton" title="Abrir Mezclador de Sonido" class="control-panel-button p-2 bg-orange-500 text-white rounded-lg shadow-lg hover:bg-orange-600 w-full flex-shrink-0 flex items-center justify-center"></button>
+                <button id="saveCanvasButton" title="Guardar Imagen" class="control-panel-button p-2 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 w-full flex-shrink-0 flex items-center justify-center"></button>
+            </div>
 
-    let current = 0;
+            <!-- Center: Canvas & Sound Mixer -->
+            <div class="flex-grow h-full w-full relative">
+                 <canvas id="relaxationCanvas" class="absolute inset-0 bg-white rounded-xl shadow-inner"></canvas>
+                 <!-- Sound Mixer Panel -->
+                 <div id="soundMixer" class="absolute top-0 right-0 h-full bg-gray-800/80 text-white p-3 rounded-l-xl backdrop-blur-sm transform translate-x-full w-48 overflow-y-auto">
+                     <h3 class="text-md font-bold mb-3 text-center">Mezclador</h3>
+                     <div id="particleSoundSelectors" class="space-y-2 mb-4"></div>
+                     <h4 class="text-sm font-semibold mb-2 mt-4 border-t border-gray-600 pt-2">Ambiente</h4>
+                     <div id="ambientSoundControls" class="space-y-2"></div>
+                 </div>
+            </div>
 
-    function switchLandscape() {
-      current = (current + 1) % landscapes.length;
-      document.body.style.background = landscapes[current].background;
+            <!-- Right Column: Shape Controls -->
+            <div id="shapeControls" class="flex flex-col flex-nowrap justify-start items-center gap-2 p-2 bg-gray-100 rounded-xl w-16 overflow-y-auto">
+                <button id="shapeCircleButton" title="Círculo" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8"><circle cx="12" cy="12" r="10"/></svg></button>
+                <button id="shapeTriangleButton" title="Triángulo" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8"><path d="M12 2L2 22H22L12 2Z"/></svg></button>
+                <button id="shapeSquareButton" title="Cuadrado" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+                <button id="shapeStarButton" title="Estrella" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></button>
+                <button id="shapeLineButton" title="Línea" class="shape-button p-2 bg-white text-gray-800 rounded-lg w-full h-12 flex-shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="w-8 h-8"><line x1="4" y1="12" x2="20" y2="12"/></svg></button>
+            </div>
+        </div>
+    </div>
 
-      const audio = document.getElementById('ambience');
-      audio.src = landscapes[current].ambience;
-      audio.play();
-    }
+    <script>
+        // --- SETUP & STATE ---
+        const canvas = document.getElementById('relaxationCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [], pushpins = [], isAnimating = true, isDragging = false, activeMode = 'default', isEraseBrushActive = false;
+        let soundInitialized = false, isMixerOpen = false;
+        let animationSpeed = 1, currentParticleSize = 15, currentParticleOpacity = 1, particleSpawnCount = 5, creativeParticleLifeSpan = 100, currentShape = 'circle';
+        const colorPalettes = { vibrant:()=>`hsl(${Math.random()*360},80%,60%)`, cool:()=>`hsl(${180+Math.random()*100},70%,70%)`, warm:()=>`hsl(${Math.random()*60},80%,65%)`, pastel:()=>`hsl(${Math.random()*360},50%,85%)`, monochromatic:()=>`hsl(220,60%,${40+Math.random()*40}%)` };
+        let paletteKeys = Object.keys(colorPalettes), currentPaletteIndex = 0;
 
-    function playChirp() {
-      document.getElementById('chirpSound').play();
-    }
+        // --- SOUND LIBRARY & MIXER STATE ---
+        const soundLibrary = {};
+        const ambientSounds = {};
+        let mixerSettings = {
+            circle: 'nota', triangle: 'nota', square: 'nota', star: 'nota', line: 'click',
+            pop: 'pop', pushpin: 'pushpin'
+        };
+        let lastTraceSoundTime = 0;
+        const shapeNotes = { circle: "C4", triangle: "E4", square: "G4", star: "A4" };
 
-    document.body.style.background = landscapes[0].background;
-  </script>
+        // --- CLASSES (Particle, Pushpin) ---
+        class Particle {
+            constructor(x, y, shape, type) {
+                this.x = x; this.y = y; this.shape = shape; this.type = type;
+                this.color = colorPalettes[paletteKeys[currentPaletteIndex]]();
+                this.size = currentParticleSize * (0.8 + Math.random() * 0.4);
+                this.speedX = (Math.random() - 0.5) * animationSpeed;
+                this.speedY = (Math.random() - 0.5) * animationSpeed;
+                this.alpha = currentParticleOpacity;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+                this.initTypeProperties();
+            }
+            initTypeProperties() {
+                switch (this.type) {
+                    case 'creative': this.decayRate = 1 / creativeParticleLifeSpan; this.sizeDecayFactor = 1 - (1 / creativeParticleLifeSpan / 2); break;
+                    case 'bubble': this.shape = 'circle'; this.size = Math.random() * 20 + 30; this.speedX *= 3; this.speedY *= 3; this.decayRate = 0; this.sizeDecayFactor = 1; break;
+                    case 'explosion': this.size = Math.random() * 5 + 5; this.speedX *= (Math.random() * 5 + 3); this.speedY *= (Math.random() * 5 + 3); this.decayRate = 0.03; this.sizeDecayFactor = 0.95; break;
+                    case 'confetti': this.shape = Math.random() < 0.5 ? 'square' : 'triangle'; this.size = Math.random() * 3 + 4; this.speedX *= (Math.random() * 8 + 5); this.speedY *= (Math.random() * 8 + 5); this.decayRate = 0.08; this.sizeDecayFactor = 0.9; this.rotationSpeed *= 10; break;
+                    default: this.decayRate = 0.01; this.sizeDecayFactor = 0.98; break;
+                }
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY; this.rotation += this.rotationSpeed;
+                if (this.type === 'bubble') {
+                    if (this.x - this.size < 0 || this.x + this.size > width) this.speedX *= -1;
+                    if (this.y - this.size < 0 || this.y + this.size > height) this.speedY *= -1;
+                } else {
+                    this.alpha -= this.decayRate; this.size *= this.sizeDecayFactor;
+                    if (this.x < 0) this.x = width; if (this.x > width) this.x = 0;
+                    if (this.y < 0) this.y = height; if (this.y > height) this.y = 0;
+                }
+                return this.alpha > 0 && this.size > 0.5;
+            }
+            draw() {
+                ctx.save(); ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color; ctx.strokeStyle = this.color;
+                ctx.translate(this.x, this.y); ctx.rotate(this.rotation); ctx.beginPath();
+                switch (this.shape) {
+                    case 'circle': ctx.arc(0, 0, this.size, 0, Math.PI * 2); ctx.fill(); if (this.type === 'bubble') { ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 2; ctx.stroke(); } break;
+                    case 'square': ctx.rect(-this.size / 2, -this.size / 2, this.size, this.size); ctx.fill(); break;
+                    case 'triangle': const h = this.size * (Math.sqrt(3) / 2); ctx.moveTo(0, -this.size * 2 / 3); ctx.lineTo(-h / 2, this.size / 3); ctx.lineTo(h / 2, this.size / 3); ctx.closePath(); ctx.fill(); break;
+                    case 'star': const s = 5, oR = this.size, iR = this.size / 2; let r = Math.PI / 2 * 3, t = Math.PI / s; ctx.moveTo(0, -oR); for (let i = 0; i < s; i++) { ctx.lineTo(Math.cos(r) * oR, Math.sin(r) * oR); r += t; ctx.lineTo(Math.cos(r) * iR, Math.sin(r) * iR); r += t; } ctx.closePath(); ctx.fill(); break;
+                    case 'line': ctx.lineWidth = this.size / 4; ctx.lineCap = 'round'; ctx.moveTo(-this.size, 0); ctx.lineTo(this.size, 0); ctx.stroke(); break;
+                }
+                ctx.restore();
+            }
+        }
+        class Pushpin {
+            constructor(x, y) {
+                this.x = x; this.y = y; this.color = colorPalettes[paletteKeys[currentPaletteIndex]](); this.size = 8;
+                playSound('pushpin');
+            }
+            draw() {
+                ctx.save(); ctx.fillStyle = this.color; ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(this.x, this.y + this.size); ctx.lineTo(this.x, this.y + this.size + 12);
+                ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.stroke(); ctx.restore();
+            }
+        }
 
+        // --- SOUND ENGINE (REFACTORED) ---
+        function setupSounds() {
+            soundLibrary.nota = { name: 'Nota', synth: new Tone.PolySynth(Tone.Synth, { oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }, volume: -12 }).toDestination() };
+            soundLibrary.drops = { name: 'Gotas', synth: new Tone.MembraneSynth({ octaves: 10, volume: -5 }).toDestination() };
+            soundLibrary.sweep = { name: 'Barrido', synth: new Tone.Synth({ volume: -15, envelope: { attack: 0.01, decay: 0.2, sustain: 0 } }).toDestination() };
+            soundLibrary.pluck = { name: 'Pulsación', synth: new Tone.PluckSynth({ volume: -8 }).toDestination() };
+            soundLibrary.click = { name: 'Chasquido', synth: new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.05, sustain: 0 }, volume: -20 }).toDestination() };
+            soundLibrary.silence = { name: 'Silencio', synth: null };
+            soundLibrary.pop = { name: 'Pop', synth: new Tone.MembraneSynth({ volume: -5 }).toDestination() };
+            soundLibrary.pushpin = { name: 'Chincheta', synth: new Tone.MembraneSynth({ pitchDecay: 0.01, volume: -5 }).toDestination() };
+
+            ambientSounds.sea = { name: 'Mar', player: new Tone.Noise('brown').start(0), filter: new Tone.AutoFilter('4n').start(0), lfo: new Tone.LFO('0.2Hz', 400, 1000).start(0), volume: new Tone.Volume(-25).toDestination(), isPlaying: false };
+            ambientSounds.sea.player.connect(ambientSounds.sea.filter); ambientSounds.sea.filter.connect(ambientSounds.sea.volume); ambientSounds.sea.lfo.connect(ambientSounds.sea.filter.filter.frequency);
+            ambientSounds.sea.player.mute = true;
+
+            ambientSounds.birds = { name: 'Pájaros', synth: new Tone.FMSynth({ harmonicity: 1.5, modulationIndex: 5, envelope: { attack: 0.01, decay: 0.1 } }), volume: new Tone.Volume(-15).toDestination(), sequence: null, isPlaying: false };
+            ambientSounds.birds.synth.connect(ambientSounds.birds.volume);
+            ambientSounds.birds.sequence = new Tone.Sequence((time, note) => { ambientSounds.birds.synth.triggerAttackRelease(note, '32n', time); }, ['C6', 'E6', 'G6', 'A6', null, 'E6', 'G6', null, 'A6'], '8n');
+            ambientSounds.birds.sequence.probability = 0.4; ambientSounds.birds.sequence.humanize = true; ambientSounds.birds.sequence.mute = true;
+        }
+
+        function playSound(soundName, isTraceSound = false) {
+            if (Tone.Master.mute.getValue() || !soundInitialized) return;
+            const sound = soundLibrary[soundName];
+            if (!sound || !sound.synth) return;
+            if (isTraceSound) {
+                const now = Tone.now();
+                if (now - lastTraceSoundTime < 0.1) return;
+                lastTraceSoundTime = now;
+            }
+            switch(soundName) {
+                case 'nota':
+                    const note = shapeNotes[currentShape] || "C4";
+                    sound.synth.triggerAttackRelease(note, "8n");
+                    break;
+                case 'drops': case 'pushpin': case 'pop':
+                    sound.synth.triggerAttackRelease("C3", "8n");
+                    break;
+                case 'pluck':
+                    sound.synth.triggerAttackRelease("C4", "8n");
+                    break;
+                case 'sweep':
+                    sound.synth.frequency.value = "C4";
+                    sound.synth.frequency.rampTo("C5", 0.1);
+                    sound.synth.triggerAttackRelease("16n");
+                    break;
+                case 'click':
+                    sound.synth.triggerAttackRelease("16n");
+                    break;
+            }
+        }
+
+        // --- CORE FUNCTIONS ---
+        function resizeCanvas() { const r = canvas.getBoundingClientRect(); width = canvas.width = r.width; height = canvas.height = r.height; }
+        function animate() {
+            if (activeMode !== 'persistent') { ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'; ctx.fillRect(0, 0, width, height); }
+            
+            const bubbles = particles.filter(p => p.type === 'bubble');
+            for (let i = 0; i < bubbles.length; i++) {
+                for (let j = i + 1; j < bubbles.length; j++) {
+                    handleBubbleCollision(bubbles[i], bubbles[j]);
+                }
+            }
+
+            pushpins.forEach(p => p.draw());
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                if (p.update()) { p.draw(); } else { particles.splice(i, 1); continue; }
+                if (p.type === 'bubble') { for (const pin of pushpins) { if (Math.hypot(p.x - pin.x, p.y - pin.y) < p.size + pin.size) { createExplosion(p.x, p.y); particles.splice(i, 1); break; } } }
+            }
+            if (isAnimating) requestAnimationFrame(animate);
+        }
+
+        function handleBubbleCollision(p1, p2) {
+            const dx = p2.x - p1.x;
+            const dy = p2.y - p1.y;
+            const distance = Math.hypot(dx, dy);
+            const minDistance = p1.size + p2.size;
+
+            if (distance < minDistance) {
+                const angle = Math.atan2(dy, dx);
+                const overlap = minDistance - distance;
+                const tx = Math.cos(angle) * overlap;
+                const ty = Math.sin(angle) * overlap;
+
+                p1.x -= tx / 2; p1.y -= ty / 2;
+                p2.x += tx / 2; p2.y += ty / 2;
+
+                const v1 = { x: p1.speedX, y: p1.speedY };
+                const v2 = { x: p2.speedX, y: p2.speedY };
+                const m1 = p1.size; const m2 = p2.size;
+
+                const v1x_new = (v1.x * (m1 - m2) + 2 * m2 * v2.x) / (m1 + m2);
+                const v1y_new = (v1.y * (m1 - m2) + 2 * m2 * v2.y) / (m1 + m2);
+                const v2x_new = (v2.x * (m2 - m1) + 2 * m1 * v1.x) / (m1 + m2);
+                const v2y_new = (v2.y * (m2 - m1) + 2 * m1 * v1.y) / (m1 + m2);
+
+                p1.speedX = v1x_new; p1.speedY = v1y_new;
+                p2.speedX = v2x_new; p2.speedY = v2y_new;
+            }
+        }
+
+        // --- PARTICLE & MODE LOGIC ---
+        function addParticles(x, y) {
+            const type = activeMode === 'creative' ? 'creative' : 'default';
+            for (let i = 0; i < particleSpawnCount; i++) { particles.push(new Particle(x, y, currentShape, type)); }
+            playSound(mixerSettings[currentShape], true);
+        }
+        let bubbleInterval; function startBubbleGeneration() { if (bubbleInterval) clearInterval(bubbleInterval); bubbleInterval = setInterval(() => { if (particles.filter(p => p.type === 'bubble').length < 8) particles.push(new Particle(Math.random() * width, Math.random() * height, 'circle', 'bubble')); }, 2000); }
+        function stopBubbleGeneration() { clearInterval(bubbleInterval); bubbleInterval = null; }
+        function createExplosion(x, y) { playSound('pop'); for (let i = 0; i < 10; i++) particles.push(new Particle(x, y, 'circle', 'explosion')); for (let i = 0; i < 15; i++) particles.push(new Particle(x, y, 'square', 'confetti')); }
+        function eraseArea(x, y) { const r = 40; particles = particles.filter(p => Math.hypot(x - p.x, y - p.y) > r + p.size); pushpins = pushpins.filter(pin => Math.hypot(x - pin.x, y - pin.y) > r + pin.size); }
+        function resetCanvas() { particles = []; pushpins = []; stopBubbleGeneration(); ctx.clearRect(0, 0, width, height); }
+
+        // --- UI & EVENT HANDLERS ---
+        const svgIcon = (d, c = "currentColor") => `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="${c}" class="w-6 h-6">${d}</svg>`;
+        const iconLib = {
+            save: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />`),
+            reset: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />`),
+            pause: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />`),
+            play: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />`),
+            persistent: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />`),
+            creative: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />`),
+            bubbles: `<svg viewBox="0 0 24 24" class="w-6 h-6" stroke-width="1.5" stroke="currentColor" fill="none"><g><circle cx="9" cy="11" r="7"/><circle cx="15" cy="9" r="5" fill="currentColor" fill-opacity="0.3"/></g></svg>`,
+            pushpins: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-6m0 6a3 3 0 100-6 3 3 0 000 6zM12 6V3" />`),
+            erase: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />`),
+            palette: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M12 3.75a9 9 0 017.063 14.563l-2.51 2.51a1.5 1.5 0 01-2.122 0l-.884-.884a1.5 1.5 0 00-2.121 0l-1.415 1.414a1.5 1.5 0 01-2.121 0l-2.122-2.122a1.5 1.5 0 00-2.121 0l-1.414 1.414a1.5 1.5 0 01-2.121 0L3.75 12m12.313-5.25a3 3 0 00-4.242 0L10.5 8.062a3 3 0 000 4.242l2.122 2.122a3 3 0 004.242 0l1.414-1.414a3 3 0 000-4.242l-1.263-1.263z" />`),
+            mixer: svgIcon(`<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />`),
+        };
+
+        function updateAllButtonStates() {
+            document.getElementById('toggleAnimationButton').innerHTML = isAnimating ? iconLib.pause : iconLib.play;
+            document.getElementById('togglePersistentModeButton').classList.toggle('bg-blue-800', activeMode === 'persistent');
+            document.getElementById('toggleCreativeModeButton').classList.toggle('bg-yellow-700', activeMode === 'creative');
+            document.getElementById('toggleBubblesModeButton').classList.toggle('bg-pink-800', activeMode === 'bubbles');
+            document.getElementById('togglePushpinsModeButton').classList.toggle('bg-teal-800', activeMode === 'pushpins');
+            document.getElementById('eraseBrushButton').classList.toggle('bg-gray-700', isEraseBrushActive);
+            document.getElementById('creativePersistenceControls').classList.toggle('hidden', activeMode !== 'creative');
+            document.getElementById('shapeControls').classList.toggle('hidden', activeMode === 'bubbles' || activeMode === 'pushpins');
+            document.getElementById('toggleMixerButton').classList.toggle('bg-orange-700', isMixerOpen);
+        }
+
+        function setMode(newMode) { activeMode = activeMode === newMode ? 'default' : newMode; stopBubbleGeneration(); if (activeMode === 'bubbles') startBubbleGeneration(); updateAllButtonStates(); }
+
+        function populateMixer() {
+            const particleSelectorsContainer = document.getElementById('particleSoundSelectors');
+            const ambientControlsContainer = document.getElementById('ambientSoundControls');
+            particleSelectorsContainer.innerHTML = ''; ambientControlsContainer.innerHTML = '';
+            const shapes = { circle: iconLib.bubbles, triangle: `<svg viewBox="0 0 24 24" class="w-4 h-4"><path d="M12 2L2 22H22L12 2Z" fill="currentColor"/></svg>`, square: `<svg viewBox="0 0 24 24" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/></svg>`, star: iconLib.creative, line: `<svg viewBox="0 0 24 24" class="w-4 h-4"><line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="3"/></svg>` };
+            for (const shape in shapes) {
+                let selectorHTML = `<div class="flex items-center justify-between"><label for="mixer-${shape}" class="text-sm">${shapes[shape]}</label><select id="mixer-${shape}" data-shape="${shape}" class="mixer-selector bg-gray-700 text-white text-xs rounded-md p-1 border border-gray-600 focus:ring-orange-500 focus:border-orange-500 w-24">`;
+                for (const soundKey in soundLibrary) {
+                    if (['pop', 'pushpin'].includes(soundKey)) continue;
+                    selectorHTML += `<option value="${soundKey}" ${mixerSettings[shape] === soundKey ? 'selected' : ''}>${soundLibrary[soundKey].name}</option>`;
+                }
+                selectorHTML += `</select></div>`;
+                particleSelectorsContainer.innerHTML += selectorHTML;
+            }
+            for (const ambientKey in ambientSounds) {
+                const sound = ambientSounds[ambientKey];
+                let controlHTML = `<div class="flex items-center justify-between"><label class="text-sm">${sound.name}</label><button id="ambient-${ambientKey}" data-ambient="${ambientKey}" class="ambient-toggle px-2 py-1 text-xs rounded-md ${sound.isPlaying ? 'bg-green-500' : 'bg-gray-600'}">Play</button></div>`;
+                ambientControlsContainer.innerHTML += controlHTML;
+            }
+            ambientControlsContainer.innerHTML += `<div class="pt-2"><label for="ambient-volume" class="text-xs">Volumen</label><input type="range" id="ambient-volume" min="-40" max="0" value="-25" class="w-full"></div>`;
+            document.querySelectorAll('.mixer-selector').forEach(sel => sel.addEventListener('change', e => { mixerSettings[e.target.dataset.shape] = e.target.value; }));
+            document.querySelectorAll('.ambient-toggle').forEach(btn => btn.addEventListener('click', e => { toggleAmbientSound(e.target.dataset.ambient); }));
+            document.getElementById('ambient-volume').addEventListener('input', e => {
+                const vol = parseFloat(e.target.value);
+                Object.values(ambientSounds).forEach(s => { if (s.volume) s.volume.volume.value = vol; });
+            });
+        }
+
+        function toggleAmbientSound(soundKey) {
+            const sound = ambientSounds[soundKey]; if (!sound) return;
+            if (!sound.isPlaying && Tone.Transport.state !== 'started') { Tone.Transport.start(); }
+            sound.isPlaying = !sound.isPlaying;
+            if (sound.player) { sound.player.mute = !sound.isPlaying; }
+            if (sound.sequence) { sound.sequence.mute = !sound.isPlaying; if(!sound.isPlaying) {sound.sequence.stop(0);} else {sound.sequence.start(0);} }
+            const btn = document.getElementById(`ambient-${soundKey}`);
+            btn.textContent = sound.isPlaying ? 'Pause' : 'Play';
+            btn.classList.toggle('bg-green-500', sound.isPlaying); btn.classList.toggle('bg-gray-600', !sound.isPlaying);
+        }
+
+        function saveCanvasAsImage() {
+            const link = document.createElement('a');
+            link.download = 'mi-creacion-visual.png';
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // --- EVENT LISTENERS & INITIALIZATION ---
+        document.getElementById('volumeSlider').addEventListener('input', async (e) => {
+            const volumeValue = parseInt(e.target.value);
+            if (volumeValue > 0 && !soundInitialized) {
+                await Tone.start();
+                setupSounds();
+                populateMixer();
+                soundInitialized = true;
+            }
+            if (volumeValue === 0) {
+                Tone.Master.mute = true;
+            } else {
+                Tone.Master.mute = false;
+                const vol_dB = Tone.gainToDb(volumeValue / 100);
+                Tone.Master.volume.value = vol_dB;
+            }
+        });
+
+        document.getElementById('resetButton').addEventListener('click', resetCanvas);
+        document.getElementById('toggleAnimationButton').addEventListener('click', () => { isAnimating = !isAnimating; if (isAnimating) animate(); updateAllButtonStates() });
+        document.getElementById('eraseBrushButton').addEventListener('click', () => { isEraseBrushActive = !isEraseBrushActive; updateAllButtonStates() });
+        document.getElementById('colorPaletteButton').addEventListener('click', () => { currentPaletteIndex = (currentPaletteIndex + 1) % paletteKeys.length });
+        document.getElementById('toggleMixerButton').addEventListener('click', () => { isMixerOpen = !isMixerOpen; document.getElementById('soundMixer').classList.toggle('translate-x-full', !isMixerOpen); updateAllButtonStates(); });
+        document.getElementById('saveCanvasButton').addEventListener('click', saveCanvasAsImage);
+        ['Persistent', 'Creative', 'Bubbles', 'Pushpins'].forEach(m => { document.getElementById(`toggle${m}ModeButton`).addEventListener('click', () => setMode(m.toLowerCase())) });
+        document.querySelectorAll('.shape-button').forEach(b => { b.addEventListener('click', () => { document.querySelectorAll('.shape-button').forEach(btn => btn.classList.remove('selected')); b.classList.add('selected'); currentShape = b.id.replace('shape', '').replace('Button', '').toLowerCase() }) });
+        document.getElementById('speedSlider').addEventListener('input', e => animationSpeed = parseFloat(e.target.value));
+        document.getElementById('particleSizeSlider').addEventListener('input', e => currentParticleSize = parseFloat(e.target.value));
+        document.getElementById('particleOpacitySlider').addEventListener('input', e => currentParticleOpacity = parseFloat(e.target.value));
+        document.getElementById('particleDensitySlider').addEventListener('input', e => particleSpawnCount = parseInt(e.target.value));
+        document.getElementById('creativePersistenceSlider').addEventListener('input', e => creativeParticleLifeSpan = parseFloat(e.target.value));
+
+        function handleInteractionStart(e) {
+            isDragging = true; const { x, y } = getCanvasCoords(e);
+            if (isEraseBrushActive) { eraseArea(x, y); return; }
+            switch (activeMode) {
+                case 'bubbles': for (let i = particles.length - 1; i >= 0; i--) { const p = particles[i]; if (p.type === 'bubble' && Math.hypot(x - p.x, y - p.y) < p.size) { createExplosion(p.x, p.y); particles.splice(i, 1); return; } } break;
+                case 'pushpins': pushpins.push(new Pushpin(x, y)); break;
+                default: addParticles(x, y); break;
+            }
+        }
+        function handleInteractionMove(e) {
+            if (!isDragging) return; const { x, y } = getCanvasCoords(e);
+            if (isEraseBrushActive) { eraseArea(x, y); } else if (activeMode !== 'bubbles' && activeMode !== 'pushpins') { addParticles(x, y); }
+        }
+        function getCanvasCoords(e) {
+            e.preventDefault(); const r = canvas.getBoundingClientRect(); let cX, cY;
+            if (e.touches) { cX = e.touches[0].clientX; cY = e.touches[0].clientY; } else { cX = e.clientX; cY = e.clientY; }
+            return { x: cX - r.left, y: cY - r.top };
+        }
+        canvas.addEventListener('mousedown', handleInteractionStart); canvas.addEventListener('touchstart', handleInteractionStart);
+        canvas.addEventListener('mousemove', handleInteractionMove); canvas.addEventListener('touchmove', handleInteractionMove);
+        canvas.addEventListener('mouseup', () => isDragging = false); canvas.addEventListener('mouseleave', () => isDragging = false);
+        canvas.addEventListener('touchend', () => isDragging = false); canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            document.getElementById('saveCanvasButton').innerHTML = iconLib.save;
+            document.getElementById('resetButton').innerHTML = iconLib.reset;
+            document.getElementById('togglePersistentModeButton').innerHTML = iconLib.persistent;
+            document.getElementById('toggleCreativeModeButton').innerHTML = iconLib.creative;
+            document.getElementById('toggleBubblesModeButton').innerHTML = iconLib.bubbles;
+            document.getElementById('togglePushpinsModeButton').innerHTML = iconLib.pushpins;
+            document.getElementById('eraseBrushButton').innerHTML = iconLib.erase;
+            document.getElementById('colorPaletteButton').innerHTML = iconLib.palette;
+            document.getElementById('toggleMixerButton').innerHTML = iconLib.mixer;
+            document.getElementById('shapeCircleButton').classList.add('selected');
+            updateAllButtonStates();
+            animate();
+        });
+        window.addEventListener('resize', resizeCanvas);
+    </script>
 </body>
 </html>
