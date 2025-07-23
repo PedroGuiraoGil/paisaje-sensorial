@@ -183,7 +183,7 @@
         }
 
         function playSound(soundName, isTraceSound = false) {
-            if (Tone.Master.mute.getValue() || !soundInitialized) return;
+            if (Tone.Master.mute || !soundInitialized) return;
             const sound = soundLibrary[soundName];
             if (!sound || !sound.synth) return;
             if (isTraceSound) {
@@ -299,7 +299,7 @@
             document.getElementById('togglePushpinsModeButton').classList.toggle('bg-teal-800', activeMode === 'pushpins');
             document.getElementById('eraseBrushButton').classList.toggle('bg-gray-700', isEraseBrushActive);
             document.getElementById('creativePersistenceControls').classList.toggle('hidden', activeMode !== 'creative');
-            document.getElementById('shapeControls').classList.toggle('hidden', activeMode === 'bubbles' || activeMode === 'pushpins');
+            document.getElementById('shapeControls').classList.toggle('hidden', activeMode === 'bubbles' || activeMode === 'pushpins' || isMixerOpen); // FIX: Hide shapes when mixer is open
             document.getElementById('toggleMixerButton').classList.toggle('bg-orange-700', isMixerOpen);
         }
 
